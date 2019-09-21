@@ -94,6 +94,15 @@ alias pk="peco-pkill"
 autoload -U compinit
 compinit
 
+function peco-path-find() {
+    # 5階層分のディレクトリを選択できるようにする
+    local filepath="$(find . -maxdepth 1 -type d -not -path '*/\.*/*' |Peco --prompt 'CHANGE DIRECTORY>')"
+    BUFFER="cd $filepath"
+    zle accept-line
+}
+zle -N peco-path-find
+bindkey '^f' peco-path-find
+
 PROMPT='%C $'
 # 履歴ファイルの保存先
 export HISTFILE=${HOME}/.zhistory
