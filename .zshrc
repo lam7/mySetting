@@ -9,6 +9,9 @@ alias pl='ls -l | peco'
 alias g='g'
 alias gd='git d'
 alias gdh='git d H'
+# option + w 履歴選択
+# option + r rootから2階層分のディレクトリを選択
+# option + e 現在のディレクトリから選択
 function peco-branch-checkout(){
     git branch -a --sort=-authordate |
     grep -v -e '->' -e '*' |
@@ -49,7 +52,7 @@ function peco-history-selection() {
 
 
 zle -N peco-history-selection
-bindkey '^R' peco-history-selection
+bindkey '^w' peco-history-selection
 
 # cdr
 if [[ -n $(echo ${^fpath}/chpwd_recent_dirs(N)) && -n $(echo ${^fpath}/cdr(N)) ]]; then
@@ -79,7 +82,7 @@ function peco-cdr() {
   fi
 }
 zle -N peco-cdr
-bindkey '^E' peco-cdr
+bindkey '^e' peco-cdr
 
 #pecoでkill
 function peco-pkill() {
@@ -96,12 +99,12 @@ compinit
 
 function peco-path-find() {
     # 5階層分のディレクトリを選択できるようにする
-    local filepath="$(find . -maxdepth 1 -type d -not -path '*/\.*/*' |Peco --prompt 'CHANGE DIRECTORY>')"
+    local filepath="$(find . -maxdepth 2 -type d -not -path '*/\.*/*' |Peco --prompt 'CHANGE DIRECTORY>')"
     BUFFER="cd $filepath"
     zle accept-line
 }
 zle -N peco-path-find
-bindkey '^f' peco-path-find
+bindkey '^r' peco-path-find
 
 PROMPT='%C $'
 # 履歴ファイルの保存先
@@ -132,3 +135,5 @@ setopt hist_no_store
 setopt hist_expand
 # 履歴をインクリメンタルに追加
 setopt inc_append_history
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
